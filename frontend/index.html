@@ -2649,9 +2649,16 @@
         return /<\s*html|<\s*style|<\s*script|function\s+updateEditor\s*\(|\.stat-bar|\.hero\s*\{|\.workspace\s*\{/i.test(text);
       }
 
-      if (looksLikeRestoredPageSource(editor.value || '')) {
-        editor.value = '';
+      function normalizeEditorOnLoad() {
+        if (looksLikeRestoredPageSource(editor.value || '')) {
+          editor.value = '';
+          updateEditor();
+        }
       }
+
+      normalizeEditorOnLoad();
+      window.addEventListener('pageshow', normalizeEditorOnLoad);
+      setTimeout(normalizeEditorOnLoad, 0);
 
       editor.addEventListener('input', updateEditor);
       editor.addEventListener('scroll', () => {
